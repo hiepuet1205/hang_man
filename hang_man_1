@@ -1,0 +1,90 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+const string list_word[] = {"hiep","uet","nbk"};
+const string figure[] = {};
+
+void render_game(string word, int incorrect_count){
+    cout << figure[incorrect_count] << endl;
+    cout << word << endl;
+    cout << incorrect_count << endl;
+}
+
+string result(int length, string sceret_word){
+    string word = sceret_word;
+    for ( int i=0 ; i<length ; i++ ){
+        word[i] = '-' ;
+    }
+    return word;
+}
+
+string update_word(string word, char guess, string secret_word){
+    for( int i=0 ; i<secret_word.length() ; i++ ){
+        if ( guess == secret_word[i]){
+            word[i] = guess;
+        }
+    }
+    return word;
+}
+
+string random_secret_word(){
+    int x = rand()%3;
+    return list_word[x] ;
+}
+
+char get_guess(){
+    char c;
+    cout << "Enter your guess: ";
+    cin >> c;
+    return c;
+}
+
+bool check(char guess, string secret_word){
+    int ch=0 ;
+    for( int i=0 ; i<secret_word.length() ; i++ ){
+        if ( guess == secret_word[i]){
+            ch=1;
+        }
+    }
+    if (ch==1)
+        return true;
+    return false;
+}
+
+void display(string word, string secret_word, int incorrect_count){
+    if ( word==secret_word )
+    {
+        cout << "YOU WIN" ;
+    }
+    if (incorrect_count >=7 )
+    {
+        cout << "YOU LOSE" ;
+    }
+}
+
+int main()
+{
+    srand(time(0));
+    string secret_word = random_secret_word();
+    string word = result(secret_word.length(),secret_word);
+    int incorrect_count = 0;
+
+    do {
+        render_game(word,incorrect_count);
+        char guess = get_guess();
+        if (check(guess,secret_word)==true){
+            word = update_word(word,guess,secret_word);
+        }
+        else{
+            incorrect_count++;
+        }
+    } while (incorrect_count < 7 && word != secret_word);
+
+    display(word,secret_word,incorrect_count);
+
+    return 0;
+}
